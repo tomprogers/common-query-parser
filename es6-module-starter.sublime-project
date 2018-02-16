@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+			"folder_exclude_patterns": [
+				"node_modules"
+			],
+			"file_exclude_patterns": [
+				".DS_Store"
+				, "*.sublime-workspace"
+			]
+		}
+	],
+	"settings":
+	{
+		"ensure_newline_at_eof_on_save": true,
+		"translate_tabs_to_spaces": false,
+		"detect_indentation": false,
+		"trim_trailing_white_space_on_save": false,
+		"default_line_ending": "unix"
+	}
+}
