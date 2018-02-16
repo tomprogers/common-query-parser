@@ -1,32 +1,27 @@
 {
-	"name": "es6-module-starter",
+	"name": "common-query-parser",
 	"version": "0.0.1",
-	"description": "Starter kit to create npm modules using ES6 and Babel with sensible defaults",
-	"main": "dist/index.js",
-	"scripts": {
-		"dev": "babel-node src/index.es6",
-		"compile": "babel src -d dist/ ",
-		"prepublish": "npm run compile",
-		"tape": "babel-node node_modules/argg src/test/*.es6",
-		"istanbul": "npm run compile && istanbul cover --dir coverage/istanbul node_modules/argg dist/test/*.js --report lcovonly",
-		"coverage": "npm run compile && istanbul cover --dir coverage/istanbul node_modules/argg dist/test/*.js --report html",
-		"coveralls": "cat ./coverage/istanbul/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-		"plato": "plato -d coverage/plato dist/index.js",
-		"test": "npm run istanbul && npm run coveralls"
-	},
-	"keywords": [],
+	"description": "Library for parsing simple query grammar",
 	"author": "Tom Rogers <tom@roguevendor.com>",
 	"license": "UNLICENSED",
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tomprogers/common-query-parser"
+	},
+	"main": "dist/index.js",
+	"scripts": {
+		"ava": "ava src/**/*.test.es6",
+		"compile": "babel src -d dist/ ",
+		"dev": "babel-node src/index.es6",
+		"prepublish": "npm run compile",
+		"test": "npm run compile && npm run ava"
+	},
 	"devDependencies": {
-		"argg": "0.0.2",
+		"ava": "^0.25.0",
 		"babel-cli": "^6",
 		"babel-core": "^6",
 		"babel-polyfill": "^6",
-		"babel-preset-env": "^1",
-		"es6-plato": "^1.0.9",
-		"coveralls": "^2.11.4",
-		"istanbul": "^0.3.18",
-		"tape": "^4.2.0"
-	},
-	"dependencies": {}
+		"babel-preset-env": "^1"
+	}
 }
