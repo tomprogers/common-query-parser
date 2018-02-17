@@ -4,14 +4,14 @@ import Parser from './parser.js'
 
 test('bare terms', (t) => {
 	
-	t.is(
+	t.deepEqual(
 		Parser(`ulysses`),
 		[
 			{ value: 'ulysses' }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`pax romana`),
 		[
 			{ value: 'pax' },
@@ -24,14 +24,14 @@ test('bare terms', (t) => {
 
 test('fielded terms', (t) => {
 	
-	t.is(
+	t.deepEqual(
 		Parser(`mission:impossible`),
 		[
 			{ field: 'mission', value: 'impossible' }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`crouching:tiger hidden:dragon`),
 		[
 			{ field: 'crouching', value: 'tiger' },
@@ -39,7 +39,7 @@ test('fielded terms', (t) => {
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`cold case:closed`),
 		[
 			{ value: 'cold' },
@@ -52,14 +52,14 @@ test('fielded terms', (t) => {
 
 test('quoted terms', (t) => {
 	
-	t.is(
+	t.deepEqual(
 		Parser(`"new york"`),
 		[
 			{ value: 'new york' }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`aka "chocolate jenga"`),
 		[
 			{ value: 'aka' },
@@ -67,28 +67,28 @@ test('quoted terms', (t) => {
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`author:"stephen king"`),
 		[
 			{ field: 'author', value: 'stephen king' }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`"jesus christ":superstar`),
 		[
 			{ field: 'jesus christ', value: 'superstar' }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`"once bitten":"twice shy"`),
 		[
 			{ field: 'once bitten', value: 'twice shy' }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`trump "known as":drumpf`),
 		[
 			{ value: 'trump' },
@@ -96,7 +96,7 @@ test('quoted terms', (t) => {
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`"tara reid" scientist:"with glasses"`),
 		[
 			{ value: 'tara reid' },
@@ -109,21 +109,21 @@ test('quoted terms', (t) => {
 
 test('negative terms', (t) => {
 	
-	t.is(
+	t.deepEqual(
 		Parser(`-temperature`),
 		[
 			{ value: 'temperature', negated: true }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`-"blood suckers"`),
 		[
 			{ value: 'blood suckers', negated: true }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`reality -bites`),
 		[
 			{ value: 'reality' },
@@ -131,7 +131,7 @@ test('negative terms', (t) => {
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`interview -"closed session"`),
 		[
 			{ value: 'interview' },
@@ -139,35 +139,35 @@ test('negative terms', (t) => {
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`-lang:en_UK`),
 		[
 			{ field: 'lang', value: 'en_UK', negated: true }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`-band:"pink floyd"`),
 		[
 			{ field: 'band', value: 'pink floyd', negated: true }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`-"party affiliation":republican`),
 		[
 			{ field: 'party affiliation', value: 'republican', negated: true }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`-"date modified":"last week"`),
 		[
 			{ field: 'date modified', value: 'last week', negated: true }
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`spiderman -"played by":maguire`),
 		[
 			{ value: 'spiderman' },
@@ -175,7 +175,7 @@ test('negative terms', (t) => {
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`"the joker" -actor:"heath ledger"`),
 		[
 			{ value: 'the joker' },
@@ -183,11 +183,11 @@ test('negative terms', (t) => {
 		]
 	)
 	
-	t.is(
+	t.deepEqual(
 		Parser(`donut:-filled`),
 		[
 			{ field: 'donut', value: '-filled' }
-		}
+		]
 	)
 	
 })

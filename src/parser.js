@@ -31,7 +31,7 @@ const ESCAPED_SPACE      = 0x1010
 export default (input) => {
 	trace && console.log(new Date().getTime() + ': Parser ', input)
 	
-	var terms = []
+	let terms = []
 	
 	/*
 	algorithm:
@@ -45,13 +45,13 @@ export default (input) => {
 		colon - the first unescaped colon signals that the term is a "key:value" construction instead of merely "value" (this is done via regex once basic separation is complete)
 	 */
 	
-	var currentTermString = '' // we build this up a char at a time, until we detect a literal, unquoted term separator
-	var insideQuotes = false // will be true when we detect the beginning of a quoted phrase
-	var nextCharIsEscaped = false // will be true for the one character immediately after any '\'
+	let currentTermString = '' // we build this up a char at a time, until we detect a literal, unquoted term separator
+	let insideQuotes = false // will be true when we detect the beginning of a quoted phrase
+	let nextCharIsEscaped = false // will be true for the one character immediately after any '\'
 
-	for(var i = 0, iMax = input.length; i < iMax; i++) {
-		var thisChar = input.charAt(i)
-		var TYPE = 'OTHER'
+	for(let i = 0, iMax = input.length; i < iMax; i++) {
+		let thisChar = input.charAt(i)
+		let TYPE = 'OTHER'
 		
 		trace && console.log(`  >${thisChar}<`)
 		
@@ -140,7 +140,7 @@ export default (input) => {
 	terms.push(currentTermString)
 	
 	// remove any empty terms from the list (this is common after quoted terms)
-	var realTerms = []
+	let realTerms = []
 	terms.forEach(function skipEmpty(term) {
 		if(term.trim() !== '') {
 			realTerms.push(term)
@@ -148,12 +148,12 @@ export default (input) => {
 	})
 	
 	// now that terms are separated from each other, split each into {field/value}
-	var hash = realTerms.map(function identifyFields(term) {
-		var parts = term.match(/^(([^: "]+):)?(.*?)$/)
-		return {
-			'field': parts[2], // can be undefined if no prefix was supplied
-			'value': parts[3]
-		}
+	let hash = realTerms.map(function identifyFields(term) {
+		let parts = term.match(/^(([^: "]+):)?(.*?)$/)
+		
+		let parsedTerm = { value: parts[3] }
+		if(parts[2]) parsedTerm.field = parts[2]
+		return parsedTerm
 	})
 	
 	return hash
