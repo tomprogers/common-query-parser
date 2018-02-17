@@ -1,60 +1,125 @@
-# es6-module-starter
-[![npm version](https://badge.fury.io/js/es6-module-starter.svg)](http://badge.fury.io/js/es6-module-starter)
-[![travis build information](https://api.travis-ci.org/vinniegarcia/es6-module-starter.svg)](https://travis-ci.org/vinniegarcia/es6-module-starter)
-[![Coverage Status](https://coveralls.io/repos/vinniegarcia/es6-module-starter/badge.svg?branch=master)](https://coveralls.io/r/vinniegarcia/es6-module-starter?branch=master)
+# common query parser
 
-Starter kit to create npm modules using ES6 and Babel with sensible defaults.
+A dumb parser for generic query syntax.
 
-## Why use this?
+**> snake plissken -title:"L.A."**
 
-Want to create an [npm](https://npmjs.com/) module with [ES6](http://es6rocks.com/)? Don't want to wait for full node support? Don't want to mess around with creating all those directories and setting up babel and npm scripts? Then this is for you.
+*I want to find movies with or about Snake Plissken, but not the 1996 sequel* Escape from L.A.
 
-## How to get started
 
-0. Install node and npm.
-1. Clone this repo: `git clone https://github.com/vinniegarcia/es6-module-starter.git my-module-name`
-2. Install dependencies: `npm i`
-3. Start hacking like it's 2015!
+## Installation & use
 
-## Modules used/included
+1. Install:
 
-- *babel* - compiles ES6 source to ES5. The `--experimental` flag is also enabled so you can use ES7 features.
-- *tape* and *argg* for simple, effective testing with less magic than mocha or jasmine.
-- *Istanbul* to report test coverage.
-- *eslint* and *babel-eslint* to analyze your code for stylistic issues.
-- *plato* to analyze the complexity of your source code.
-- *coveralls* to send your test results to coveralls.io.
+```
+npm install common-query-parser
+```
 
-These are just defaults. Feel free to swap out eslint for jshint, or tape for mocha, or whatever you use for CI instead of coveralls.
+or, with yarn:
 
-## Layout
+```
+yarn add common-query-parser
+```
 
-- `src/` - Your ES6 source code goes here. Files have a `.es6` extension for syntax highlighting in Sublime Text with [babel-sublime](https://github.com/babel/babel-sublime)
-- `src/tests/` - Your ES6 tests go here.
-- `src/.eslintrc` - ESLint configuration
-- `coverage/` - Code coverage reports are output here.
-- `dist/` - Your generated ES5 source is output here. This directory is under gitignore.
-- `.gitignore` - a sensible .gitignore file to prevent you from checking in generated source.
-- `.npmignore` - preconfigured to publish only the generated source code.
-- `package.json` - Customize this to publish your own module.
-- `.travis.yml` - Customize this if you use [Travis CI](https://travis-ci.org/) for builds.
-- `.coveralls.yml` - Customize this if you use [coveralls](https://coveralls.io/) for code coverage.
-- `README.md` - Delete all this and write your own.
+2. Import & feed it strings:
 
-## npm scripts 
+```
+import Parser from 'common-query-parser'
 
-These scripts are the main way to interact with your module as you develop it.
+let queryTerms = Parser(`house of the rising sun -band:"the animals"`)
+//=> [
+    { value: 'house' },
+    { value: 'of' },
+    { value: 'the' },
+    { value: 'rising' },
+    { value: 'sun' },
+    { field: 'band', value: 'the animals', negated: true }
+]
+```
 
-- `compile` - run [babel](https://babeljs.io/) to compile your ES6 source to ES5. Output goes to the `dist/` directory.
-- `lint` - run [ESLint](http://eslint.org/) on your ES6 source and reports any style errors.
-- `tape` - test your code.
-- `coverage` - run [Istanbul](https://gotwarlost.github.io/istanbul/) on your code to report coverage. Reports output in HTML to the `coverage/istanbul` directory.
-- `istanbul` - run Istanbul, but output only lcov files for coveralls to read.
-- `coveralls` - run coveralls, using Istanbul's lcov report as input.
-- `plato` - run [plato](https://github.com/es-analysis/plato), a code analysis tool, on your generated source (plato doesn't support ES6 at the moment; as soon as it does I'll swap it to analyze ES6 source).
-- `test` - run tape, Istanbul, and coveralls.
-- `prepublish` - compiles your ES6 source to prepare for publishing to npm.
 
-## Questions?
+## Query grammar
 
-File an [issue](https://github.com/vinniegarcia/es6-module-starter/issues) and I'll try to answer you.
+CQP groks a fairly common query syntax that supports words and phrases, optionally scoped to named fields, and simple negation.
+
+- terms are separated by spaces, and can contain any other characters
+- surround a phrase with quotes to treat it as a single term
+- prefix any term with a colon to specify a named field for the term
+- as with terms, field names may only contain spaces if the field name is wrapped with quotes
+- prefix a term with minus to indicate it is unwanted
+- literal spaces, quotes, colons, and minus signs may be escaped with a backslash (`\`)
+
+
+## Return value
+
+CQP always returns an array, with one element per term recovered from the input string, in source order. Letter case is preserved. Elements are shaped like so:
+
+```
+{
+    field: String // only present if term was prefixed with name & colon
+    value: String // the text of the term, excluding any outer quotation marks
+    negated: true // only present if term was prefixed with minus
+}
+```
+
+If no terms could be recovered, an empty array will be returned.
+
+
+## Limitations
+
+CQP does not support boolean operators or logical grouping of any kind. All terms are interpreted as being jointly required.
+
+It doesn't doesn't know anything about your data set, and it doesn't provide any logic for filtering a data set.
+
+It has not been tested with multi-byte character encodings.
+
+
+# Development
+
+Pull requests welcome, as are tickets and good edge cases.
+
+The parser algorithm inspects every character in order in a mode-based way, instead of being built with Regular Expressions or other, more sugary strategies.
+
+
+## Roadmap
+
+The only feature I know I want to add is a second parsing tool that uses [boolean-parser-js](https://github.com/riichard/boolean-parser-js) to parse and recover sets of independently satisfactory criteria from enhanced syntax including boolean operators and grouping with parentheses.
+
+I'm open to other ideas, like better UTF-16 support.
+
+
+## Setup & run
+
+Clone and install dependencies with yarn or npm.
+
+
+## Use TDD
+
+I find TDD uniquely helpful for libraries like this. I recommend you begin by creating new test cases in `parser.test.js` for whatever syntax you desire, then editing until all tests pass.
+
+You can run tests with:
+
+```
+npm test
+```
+
+or, with yarn
+
+```
+yarn test
+```
+
+
+## Stylistic stuff
+
+I hate linters. If you intend to submit a PR, make your code look like mine, but above all, format code for clarity.
+
+
+# Acknowledgments
+
+This repo is based on Dan Couper's [es6-module-starter](https://github.com/DanCouper/es6-module-starter), although it was broken when I forked, and I was forced to rip out a lot of optional stuff I couldn't set up again.
+
+
+# License
+
+UNLICENSED (for now)
