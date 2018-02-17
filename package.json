@@ -11,11 +11,11 @@
 	},
 	"main": "dist/index.js",
 	"scripts": {
-		"ava": "ava src/**/*.test.es6",
 		"compile": "babel src -d dist/ ",
-		"dev": "babel-node src/index.es6",
+		"dev": "babel-node src/index.js",
 		"prepublish": "npm run compile",
-		"test": "npm run compile && npm run ava"
+		"pretest": "npm run compile",
+		"test": "ava dist/**/*.test.js"
 	},
 	"devDependencies": {
 		"ava": "^0.25.0",
