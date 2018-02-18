@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"description": "Library for parsing simple query grammar",
 	"author": "Tom Rogers <tom@roguevendor.com>",
-	"license": "UNLICENSED",
+	"license": "SEE LICENSE IN LICENSE",
 	"keywords": [],
 	"repository": {
 		"type": "git",
