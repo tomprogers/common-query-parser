@@ -176,21 +176,30 @@ export default (input) => {
 	trace && console.log(`terms`, terms)
 	
 	// remove any empty terms from the list (this is common after quoted terms)
-	let realTerms = []
-	terms.forEach(function skipEmpty(term) {
-		if(term.trim() !== '') {
-			realTerms.push(term)
-		}
+	// let realTerms = []
+	// terms.forEach(function skipEmpty(term) {
+	// 	if(term.trim() !== '') {
+	// 		realTerms.push(term)
+	// 	}
+	// })
+	
+	
+	let hash = terms.map((parts) => {
+		if(parts.length === 2) return { field: parts[0], value: parts[1] }
+		else if(parts.length === 1) return { value: parts[0] }
 	})
 	
+	trace && console.log(`hash`, hash)
+	
+	
 	// now that terms are separated from each other, split each into {field/value}
-	let hash = realTerms.map(function identifyFields(term) {
-		let parts = term.match(/^(([^: "]+):)?(.*?)$/)
+	// let hash = realTerms.map(function identifyFields(term) {
+	// 	let parts = term.match(/^(([^: "]+):)?(.*?)$/)
 		
-		let parsedTerm = { value: parts[3] }
-		if(parts[2]) parsedTerm.field = parts[2]
-		return parsedTerm
-	})
+	// 	let parsedTerm = { value: parts[3] }
+	// 	if(parts[2]) parsedTerm.field = parts[2]
+	// 	return parsedTerm
+	// })
 	
 	return hash
 }
