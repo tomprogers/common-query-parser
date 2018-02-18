@@ -126,28 +126,17 @@ export default (input) => {
 				insideQuotes = false
 				break
 			
-			case ESCAPED_QUOTE: // copy char
-				currentAtomString += thisChar
-				break
-			
 			case BACKSLASH: // begin escape
-				trace && console.log('  begin escape sequence')
-				nextCharIsEscaped = true
-				break
-			
 			case QUOTED_BACKSLASH: // begin escape
 				trace && console.log('  begin escape sequence')
 				nextCharIsEscaped = true
-				break
-			
-			case ESCAPED_BACKSLASH: // copy char
-				currentAtomString += thisChar
 				break
 			
 			case SPACE: // end atom & term
 				trace && console.log('  end atom & term')
 				if(currentTermParts.length === 0) {
 					currentTermParts.push(termIsNegated)
+					termIsNegated = false
 				}
 				currentTermParts.push(currentAtomString)
 				terms.push(currentTermParts)
@@ -155,18 +144,11 @@ export default (input) => {
 				currentAtomString = ''
 				break
 			
-			case QUOTED_SPACE: // copy char
-				currentAtomString += thisChar
-				break
-			
-			case ESCAPED_SPACE: // copy char
-				currentAtomString += thisChar
-				break
-			
 			case COLON: // end first atom, or copy
 				trace && console.log('  end first atom or copy')
 				if(currentTermParts.length === 0) {
 					currentTermParts.push(termIsNegated)
+					termIsNegated = false
 					currentTermParts.push(currentAtomString)
 					currentAtomString = ''
 				} else {
@@ -174,16 +156,14 @@ export default (input) => {
 				}
 				break
 			
+			// sometimes special characters are treated like normal characters
+			case ESCAPED_QUOTE:
+			case ESCAPED_BACKSLASH:
+			case QUOTED_SPACE:
+			case ESCAPED_SPACE:
 			case QUOTED_COLON:
-				currentAtomString += thisChar
-				break
-			
 			case ESCAPED_COLON:
-				currentAtomString += thisChar
-				break
-			
-			
-			default: //copy char
+			default:
 				currentAtomString += thisChar
 				break
 		}
@@ -196,15 +176,6 @@ export default (input) => {
 	terms.push(currentTermParts)
 	
 	trace && console.log(`terms`, terms)
-	
-	// remove any empty terms from the list (this is common after quoted terms)
-	// let realTerms = []
-	// terms.forEach(function skipEmpty(term) {
-	// 	if(term.trim() !== '') {
-	// 		realTerms.push(term)
-	// 	}
-	// })
-	
 	
 	return terms.map((termParts) => {
 		let term = {};
