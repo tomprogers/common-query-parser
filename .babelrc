@@ -5,7 +5,6 @@
 				"useBuiltIns": "entry",
 				"targets": {
 					"node": "current"
-					// "browsers": "Last 2 versions"
 				}
 			}
 		]
