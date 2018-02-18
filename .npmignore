@@ -1,6 +1,4 @@
 src/
-dist/test/
-coverage/
-.coveralls.yml
-.travis.yml
+dist/**/*.test.js
 .gitignore
+*.sublime-*
