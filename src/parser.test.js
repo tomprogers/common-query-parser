@@ -132,10 +132,10 @@ test('negative terms', (t) => {
 	)
 	
 	t.deepEqual(
-		Parser(`interview -"closed session"`),
+		Parser(`-"closed session" interview`),
 		[
-			{ value: 'interview' },
-			{ value: 'closed session', negated: true }
+			{ value: 'closed session', negated: true },
+			{ value: 'interview' }
 		]
 	)
 	
