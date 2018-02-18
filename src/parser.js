@@ -6,12 +6,14 @@
 	}
  */
 
-const trace = true // enable very granular debugging
+const trace = false // enable very granular debugging
 
 const CHAR_QUOTE = '"'
 const CHAR_BACKSLASH = '\\'
 const CHAR_SPACE = ' '
 const CHAR_COLON = ':'
+const CHAR_MINUS = '-'
+
 
 const QUOTE              = 'QUOTE' //0x0001
 const QUOTED_QUOTE       = 'QUOTED_QUOTE' //0x0010
@@ -25,7 +27,9 @@ const ESCAPED_SPACE      = 'ESCAPED_SPACE' //0x1010
 const COLON              = 'COLON'
 const QUOTED_COLON       = 'QUOTED_COLON'
 const ESCAPED_COLON      = 'ESCAPED_COLON'
-
+const MINUS              = 'MINUS'
+const QUOTED_MINUS       = 'QUOTED_MINUS'
+const ESCAPED_MINUS      = 'ESCAPED_MINUS'
 
 /**
  * given a single string that (presumably), separate it into /(field:)?"?value"?/ pairs
@@ -53,13 +57,19 @@ export default (input) => {
 	let currentAtomString = '' // we build this up character by character until we find a character that ends an atom (a space, a colon, a quote)
 	let insideQuotes = false // will be true when we detect the beginning of a quoted phrase
 	let nextCharIsEscaped = false // will be true for the one character immediately after any '\'
+	let termIsNegated = false // tracks whether the current search term is negated, which can only happen if first char is a minus
 	
 	for(let i = 0, iMax = input.length; i < iMax; i++) {
 		let thisChar = input.charAt(i)
 		let TYPE = 'OTHER'
 		
+		// detection of minus
+		if(thisChar === CHAR_MINUS && currentTermParts.length === 0 && currentAtomString === '') {
+			TYPE = MINUS
+		}
+		
 		// detection of quotes
-		if(thisChar === CHAR_QUOTE && !insideQuotes && !nextCharIsEscaped) {
+		else if(thisChar === CHAR_QUOTE && !insideQuotes && !nextCharIsEscaped) {
 			TYPE = QUOTE
 		} else if(thisChar === CHAR_QUOTE && insideQuotes && !nextCharIsEscaped) {
 			TYPE = QUOTED_QUOTE
@@ -101,6 +111,11 @@ export default (input) => {
 		
 		switch(TYPE) {
 			
+			case MINUS: // negate this term
+				trace && console.log('  negate term')
+				termIsNegated = true
+				break;
+			
 			case QUOTE: // begin phrase
 				trace && console.log('  begin phrase')
 				insideQuotes = true
@@ -131,6 +146,9 @@ export default (input) => {
 			
 			case SPACE: // end atom & term
 				trace && console.log('  end atom & term')
+				if(currentTermParts.length === 0) {
+					currentTermParts.push(termIsNegated)
+				}
 				currentTermParts.push(currentAtomString)
 				terms.push(currentTermParts)
 				currentTermParts = []
@@ -148,6 +166,7 @@ export default (input) => {
 			case COLON: // end first atom, or copy
 				trace && console.log('  end first atom or copy')
 				if(currentTermParts.length === 0) {
+					currentTermParts.push(termIsNegated)
 					currentTermParts.push(currentAtomString)
 					currentAtomString = ''
 				} else {
@@ -170,6 +189,9 @@ export default (input) => {
 		}
 	}
 	
+	if(currentTermParts.length === 0) {
+		currentTermParts.push(termIsNegated)
+	}
 	currentTermParts.push(currentAtomString)
 	terms.push(currentTermParts)
 	
@@ -184,22 +206,19 @@ export default (input) => {
 	// })
 	
 	
-	let hash = terms.map((parts) => {
-		if(parts.length === 2) return { field: parts[0], value: parts[1] }
-		else if(parts.length === 1) return { value: parts[0] }
-	})
-	
-	trace && console.log(`hash`, hash)
-	
-	
-	// now that terms are separated from each other, split each into {field/value}
-	// let hash = realTerms.map(function identifyFields(term) {
-	// 	let parts = term.match(/^(([^: "]+):)?(.*?)$/)
+	return terms.map((termParts) => {
+		let term = {};
 		
-	// 	let parsedTerm = { value: parts[3] }
-	// 	if(parts[2]) parsedTerm.field = parts[2]
-	// 	return parsedTerm
-	// })
-	
-	return hash
+		if(termParts.length === 3) {
+			term = { field: termParts[1], value: termParts[2] }
+			if(termParts[0] === true) term.negated = true
+			
+		} else {
+			term = { value: termParts[1] }
+			if(termParts[0] === true) term.negated = true
+			
+		}
+		
+		return term
+	})
 }
