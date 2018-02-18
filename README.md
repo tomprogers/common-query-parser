@@ -2,9 +2,100 @@
 
 A dumb parser for generic query syntax.
 
-**> snake plissken -title:"L.A."**
+```
+snake plissken -title:L.A.
+```
 
 *I want to find movies with or about Snake Plissken, but not the 1996 sequel* Escape from L.A.
+
+
+## Query grammar
+
+CQP groks a straightforward query syntax that supports words and phrases, optionally scoped to named fields, with simple negation and escaping.
+
+- terms are separated by spaces, and can contain any other characters
+
+```
+it's pat!
+```
+
+- surround a set of words with quotes to treat it as a single term
+
+```
+"the searchers"
+```
+
+- prefix any term with a word and a colon to specify a named field for that term
+
+```
+author:niven
+```
+
+- as with terms, surround a field name with quotes to treat several words as a single field name
+
+```
+"date modified":2018-02-17
+```
+
+- prefix a term with minus to indicate it is unwanted
+
+```
+-twilight
+```
+
+- spaces, quotes, colons, and minus signs may be escaped with a backslash (`\`), which causes them to be treated as normal characters
+
+```
+mission\:impossible
+```
+
+
+## Return value
+
+CQP always returns an array, with one element per term recovered from the input string, in source order. Letter case is preserved. Elements are shaped like so:
+
+```
+{
+    // only present if term was prefixed with field name & colon
+    field: String | undefined
+    
+    // the text of the term, excluding any outer quotation marks
+    value: String
+    
+    // only present if term was prefixed with minus
+    negated: true | undefined
+}
+```
+
+An example:
+
+```
+Parser('house of the rising sun -band:"the animals"')
+```
+
+yields:
+
+```
+[
+    { value: 'house' },
+    { value: 'of' },
+    { value: 'the' },
+    { value: 'rising' },
+    { value: 'sun' },
+    { field: 'band', value: 'the animals', negated: true }
+]
+```
+
+If no terms could be recovered, an empty array will be returned.
+
+
+## Limitations
+
+CQP does not support boolean operators or logical grouping of any kind. All terms are interpreted as being jointly required.
+
+It doesn't doesn't know anything about your data set, and it doesn't provide any logic for filtering a data set.
+
+It has not been tested with multi-byte character encodings.
 
 
 ## Installation & use
@@ -27,51 +118,7 @@ yarn add common-query-parser
 import Parser from 'common-query-parser'
 
 let queryTerms = Parser(`house of the rising sun -band:"the animals"`)
-//=> [
-    { value: 'house' },
-    { value: 'of' },
-    { value: 'the' },
-    { value: 'rising' },
-    { value: 'sun' },
-    { field: 'band', value: 'the animals', negated: true }
-]
 ```
-
-
-## Query grammar
-
-CQP groks a fairly common query syntax that supports words and phrases, optionally scoped to named fields, and simple negation.
-
-- terms are separated by spaces, and can contain any other characters
-- surround a phrase with quotes to treat it as a single term
-- prefix any term with a colon to specify a named field for the term
-- as with terms, field names may only contain spaces if the field name is wrapped with quotes
-- prefix a term with minus to indicate it is unwanted
-- literal spaces, quotes, colons, and minus signs may be escaped with a backslash (`\`)
-
-
-## Return value
-
-CQP always returns an array, with one element per term recovered from the input string, in source order. Letter case is preserved. Elements are shaped like so:
-
-```
-{
-    field: String // only present if term was prefixed with name & colon
-    value: String // the text of the term, excluding any outer quotation marks
-    negated: true // only present if term was prefixed with minus
-}
-```
-
-If no terms could be recovered, an empty array will be returned.
-
-
-## Limitations
-
-CQP does not support boolean operators or logical grouping of any kind. All terms are interpreted as being jointly required.
-
-It doesn't doesn't know anything about your data set, and it doesn't provide any logic for filtering a data set.
-
-It has not been tested with multi-byte character encodings.
 
 
 # Development
