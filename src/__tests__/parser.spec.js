@@ -61,13 +61,56 @@ describe(`parser`, () => {
 			{ field: 'breed', value: 'black' },
 			{ value: 'lab' }
 		])
-
 	})
 
 
+	it(`handles negated terms`, () => {
+		expect(
+			parseQuery(`-one two three`)
+		).toEqual([
+			{ value: 'one', negated: true },
+			{ value: 'two' },
+			{ value: 'three' },
+		])
 
-	xit(`handles negated terms`, () => {})
-	xit(`understands quoted field names`, () => {})
+		expect(
+			parseQuery(`one -two three`)
+		).toEqual([
+			{ value: 'one' },
+			{ value: 'two', negated: true },
+			{ value: 'three' },
+		])
+
+		expect(
+			parseQuery(`one two -three`)
+		).toEqual([
+			{ value: 'one' },
+			{ value: 'two' },
+			{ value: 'three', negated: true },
+		])
+
+		expect(
+			parseQuery(`-color:red color:blue -orange green`)
+		).toEqual([
+			{ field: 'color', value: 'red', negated: true },
+			{ field: 'color', value: 'blue' },
+			{ value: 'orange', negated: true },
+			{ value: 'green' }
+		])
+	})
+
+
+	it(`understands quoted field names`, () => {
+		expect(
+			parseQuery(`one "field name":value two`)
+		).toEqual([
+			{ value: 'one' },
+			{ field: 'field name', value: 'value' },
+			{ value: 'two' }
+		])
+	})
+
+
 	xit(`permits escaping of special query characters`, () => {})
 	xit(`always returns an array`, () => {})
 
