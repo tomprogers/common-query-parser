@@ -58,10 +58,10 @@ CQP always returns an array, with one element per term recovered from the input 
 {
     // only present if term was prefixed with field name & colon
     field: String | undefined
-    
+
     // the text of the term, excluding any outer quotation marks
     value: String
-    
+
     // only present if term was prefixed with minus
     negated: true | undefined
 }
@@ -139,22 +139,6 @@ I'm open to other ideas, like better UTF-16 support.
 
 Clone and install dependencies with yarn or npm.
 
-
-## Use TDD
-
-I find TDD uniquely helpful for libraries like this. I recommend you begin by creating new test cases in `parser.test.js` for whatever syntax you desire, then editing until all tests pass.
-
-You can run tests with:
-
-```
-npm test
-```
-
-or, with yarn
-
-```
-yarn test
-```
 
 
 ## Stylistic stuff
