@@ -1,11 +1,3 @@
-/*
-	{
-		field: String | undefined
-		value: String
-		negated: Boolean | undefined
-	}
- */
-
 const trace = false // enable very granular debugging
 
 const CHAR_QUOTE = '"'
@@ -15,28 +7,26 @@ const CHAR_COLON = ':'
 const CHAR_MINUS = '-'
 
 
-const QUOTE              = 'QUOTE' //0x0001
-const QUOTED_QUOTE       = 'QUOTED_QUOTE' //0x0010
-const ESCAPED_QUOTE      = 'ESCAPED_QUOTE' //0x0100
-const BACKSLASH          = 'BACKSLASH' //0x1000
-const QUOTED_BACKSLASH   = 'QUOTED_BACKSLASH' //0x0011
-const ESCAPED_BACKSLASH  = 'ESCAPED_BACKSLASH' //0x0101
-const SPACE              = 'SPACE' //0x1001
-const QUOTED_SPACE       = 'QUOTED_SPACE' //0x0110
-const ESCAPED_SPACE      = 'ESCAPED_SPACE' //0x1010
+const QUOTE              = 'QUOTE'
+const QUOTED_QUOTE       = 'QUOTED_QUOTE'
+const ESCAPED_QUOTE      = 'ESCAPED_QUOTE'
+const BACKSLASH          = 'BACKSLASH'
+const QUOTED_BACKSLASH   = 'QUOTED_BACKSLASH'
+const ESCAPED_BACKSLASH  = 'ESCAPED_BACKSLASH'
+const SPACE              = 'SPACE'
+const QUOTED_SPACE       = 'QUOTED_SPACE'
+const ESCAPED_SPACE      = 'ESCAPED_SPACE'
 const COLON              = 'COLON'
 const QUOTED_COLON       = 'QUOTED_COLON'
 const ESCAPED_COLON      = 'ESCAPED_COLON'
 const MINUS              = 'MINUS'
-const QUOTED_MINUS       = 'QUOTED_MINUS'
-const ESCAPED_MINUS      = 'ESCAPED_MINUS'
 
 /**
- * given a single string that (presumably), separate it into /(field:)?"?value"?/ pairs
- * @param  {string} input - an input string of arbitrary length
- * @return {array} of { field: string , value: string }
+ * grok distinct query terms from a string
+ * @param  {String} input - an input string of arbitrary length
+ * @return {Array} of { field: string , value: string, negated: boolean }
  */
-export default (input) => {
+export default function parseQuery( input ) {
 	if(typeof input !== 'string') {
 		throw new Error(`${typeof input} is not a string`)
 	}
@@ -53,13 +43,13 @@ export default (input) => {
 	special characters are:
 		space - search terms are separated by spaces (unless those spaces are escaped or occur in a quoted phrase)
 		quote - begins or ends a quoted phrase; within a quoted phrase, spaces are not treated as delimiters
-		backslash - used to escape special characters so they are treated as literal values
 		colon - the first unescaped colon signals that the term is a "key:value" construction instead of merely "value" (this is done via regex once basic separation is complete)
-	 */
+		backslash - used to escape special characters so they are treated as literal values
+	*/
 
 	let currentTermParts = [] // there will be 1 or 2 term parts; this is how we tell diff between field name and term value
 	let currentAtomString = '' // we build this up character by character until we find a character that ends an atom (a space, a colon, a quote)
-	let insideQuotes = false // will be true when we detect the beginning of a quoted phrase
+	let insideQuotes = false // will be true when we detect the beginning of a quoted phrase; becomes false once the phrase is terminated with a closing quote
 	let nextCharIsEscaped = false // will be true for the one character immediately after any '\'
 	let termIsNegated = false // tracks whether the current search term is negated, which can only happen if first char is a minus
 
@@ -181,8 +171,8 @@ export default (input) => {
 
 	trace && console.log(`terms`, terms)
 
-	return terms.map((termParts) => {
-		let term = {};
+	return terms.map(termParts => {
+		let term = {}
 
 		if(termParts.length === 3) {
 			term = { field: termParts[1], value: termParts[2] }
