@@ -1,4 +1,4 @@
-import parseQuery from '../parser.js'
+import parseQuery from '../parse-query.js'
 
 
 describe(`parseQuery( input )`, () => {
