@@ -22,15 +22,15 @@
 		"test": "jest --no-cache --runInBand"
 	},
 	"jest": {
-    "verbose": true,
-    "testPathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "!**/node_modules/**"
-    ]
-  },
+		"verbose": true,
+		"testPathIgnorePatterns": [
+			"/node_modules/"
+		],
+		"collectCoverageFrom": [
+			"src/**/*.js",
+			"!**/node_modules/**"
+		]
+	},
 	"devDependencies": {
 		"@babel/cli": "^7.0.0",
 		"@babel/core": "^7.2.0",
@@ -49,5 +49,8 @@
 		"babel-core": "^7.0.0-bridge.0",
 		"babel-jest": "^23.6.0",
 		"jest": "^23.4.2"
+	},
+	"dependencies": {
+		"lodash": "^4.17.13"
 	}
 }
