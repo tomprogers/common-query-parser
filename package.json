@@ -1,6 +1,6 @@
 {
 	"name": "common-query-parser",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Library for parsing simple query grammar",
 	"author": "Tom Rogers <tom@roguevendor.com>",
 	"license": "see LICENSE",
