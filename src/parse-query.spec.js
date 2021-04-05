@@ -1,8 +1,7 @@
-import parseQuery from '../parse-query.js'
+const parseQuery = require('./parse-query')
 
 
 describe(`parseQuery( input )`, () => {
-
 
 	it(`handles a single term`, () => {
 		expect(
@@ -162,6 +161,5 @@ describe(`parseQuery( input )`, () => {
 		expect( ()=> parseQuery() ).toThrow()
 		expect( ()=> parseQuery(null) ).toThrow()
 	})
-
 
 })

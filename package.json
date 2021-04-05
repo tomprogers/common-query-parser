@@ -1,57 +1,27 @@
 {
-	"name": "common-query-parser",
-	"version": "1.0.1",
-	"description": "Library for parsing simple query grammar",
-	"author": "Tom Rogers <tom@roguevendor.com>",
-	"license": "see LICENSE",
-	"keywords": [
-		"query",
-		"syntax",
-		"grammar",
-		"parser"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/tomprogers/common-query-parser"
-	},
-	"main": "dist/index.js",
-	"scripts": {
-		"compile": "NODE_ENV=production babel src --out-dir dist --ignore src/__tests__ --source-maps",
-		"prepublish": "yarn compile",
-		"pretest": "yarn compile",
-		"test": "jest --no-cache --runInBand"
-	},
-	"jest": {
-		"verbose": true,
-		"testPathIgnorePatterns": [
-			"/node_modules/"
-		],
-		"collectCoverageFrom": [
-			"src/**/*.js",
-			"!**/node_modules/**"
-		]
-	},
-	"devDependencies": {
-		"@babel/cli": "^7.0.0",
-		"@babel/core": "^7.2.0",
-		"@babel/plugin-proposal-class-properties": "^7.2.3",
-		"@babel/plugin-proposal-export-namespace-from": "^7.2.0",
-		"@babel/plugin-proposal-function-sent": "^7.2.0",
-		"@babel/plugin-proposal-json-strings": "^7.2.0",
-		"@babel/plugin-proposal-numeric-separator": "^7.2.0",
-		"@babel/plugin-proposal-throw-expressions": "^7.2.0",
-		"@babel/plugin-syntax-dynamic-import": "^7.2.0",
-		"@babel/plugin-syntax-import-meta": "^7.2.0",
-		"@babel/plugin-transform-modules-commonjs": "^7.2.0",
-		"@babel/polyfill": "^7.2.5",
-		"@babel/preset-env": "^7.2.3",
-		"@babel/preset-react": "^7.0.0",
-		"babel-core": "^7.0.0-bridge.0",
-		"babel-jest": "^23.6.0",
-		"jest": "^23.4.2"
-	},
-	"dependencies": {
-		"lodash": "^4.17.13",
-		"mem": "^4.0.0"
-	}
+  "name": "common-query-parser",
+  "version": "1.0.1",
+  "description": "Parser for familiar fielded query grammar",
+  "author": "Tom Rogers <tom@roguevendor.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "repository": "github:tomprogers/common-query-parser",
+  "keywords": [
+    "grammar",
+    "parser",
+    "query",
+    "syntax"
+  ],
+  "scripts": {
+    "test": "jest",
+    "build": "NODE_ENV=prod babel src --ignore src/**/*.spec.js --out-dir dist --source-maps",
+    "prepublish": "yarn build"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.13.14",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/preset-env": "^7.13.12",
+    "jest": "^26.6.3"
+  }
 }
