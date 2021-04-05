@@ -1,3 +1,10 @@
-import parseQuery from './parse-query.js'
+const Parser = require('./parse-query')
 
-export default parseQuery
+
+if( typeof define === 'function' && define.amd ) {
+	define([], () => Parser)
+
+} else if( typeof module === 'object' && module.exports ) {
+	module.exports = Parser
+
+}
