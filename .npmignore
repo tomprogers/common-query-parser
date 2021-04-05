@@ -1,4 +1,9 @@
-src/
-dist/**/*.test.js
+.babelrc
 .gitignore
-*.sublime-*
+.npmignore
+.nvmrc
+.vscode/
+icon.png
+src/
+workspace.*
+yarn.lock
