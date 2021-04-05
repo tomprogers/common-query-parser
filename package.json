@@ -1,6 +1,6 @@
 {
   "name": "common-query-parser",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Parser for familiar fielded query grammar",
   "author": "Tom Rogers <tom@roguevendor.com>",
   "license": "MIT",
