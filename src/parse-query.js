@@ -26,7 +26,7 @@ const MINUS              = 'MINUS'
  * @param  {String} input - an input string of arbitrary length
  * @return {Array} of { field: string , value: string, negated: boolean }
  */
-export default function parseQuery( input ) {
+module.exports = function parseQuery( input ) {
 	if(typeof input !== 'string') {
 		throw new Error(`${typeof input} is not a string`)
 	}
